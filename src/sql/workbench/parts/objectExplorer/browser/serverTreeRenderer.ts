@@ -14,6 +14,7 @@ import { ITree, IRenderer } from 'vs/base/parts/tree/browser/tree';
 import { IConnectionManagementService } from 'sql/platform/connection/common/connectionManagement';
 import { TreeNode } from 'sql/workbench/parts/objectExplorer/common/treeNode';
 import { InputBox } from 'vs/base/browser/ui/inputbox/inputBox';
+import { renderIcon, renderServerIcon } from 'sql/workbench/parts/objectExplorer/browser/iconRenderer';
 
 export interface IConnectionTemplateData {
 	root: HTMLElement;
@@ -152,19 +153,25 @@ export class ServerTreeRenderer implements IRenderer {
 		let iconLowerCaseName = iconName.toLocaleLowerCase();
 		templateData.icon.classList.add(iconLowerCaseName);
 
+		if (treeNode.iconPath) {
+			renderIcon(templateData.icon, treeNode.iconPath);
+		}
+
 		templateData.label.textContent = treeNode.label;
 		templateData.root.title = treeNode.label;
 	}
 
-
 	private renderConnection(connection: ConnectionProfile, templateData: IConnectionTemplateData): void {
 		if (!this._isCompact) {
+			let serverInfo = this._connectionManagementService.getServerInfo(connection.id);
 			if (this._connectionManagementService.isConnected(undefined, connection)) {
 				templateData.icon.classList.remove('disconnected');
 				templateData.icon.classList.add('connected');
+				renderServerIcon(templateData.icon, serverInfo, true);
 			} else {
 				templateData.icon.classList.remove('connected');
 				templateData.icon.classList.add('disconnected');
+				renderServerIcon(templateData.icon, serverInfo, false);
 			}
 		}
 
