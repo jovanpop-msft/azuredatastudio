@@ -35,11 +35,11 @@ export function FilterErrorPath(line: string): string {
 			return values[1];
 		}
 	}
+	return undefined;
 }
 
 export class Telemetry {
 	private static reporter: TelemetryReporter;
-	private static userId: string;
 	private static platformInformation: PlatformInformation;
 	private static disabled: boolean;
 
